@@ -47,7 +47,7 @@ package object smach {
     def isHalted = self.fold(ifContinuation = { _ => false }, ifSuccess = { _ => false }, ifHalted = { _ => true })
     def isRecoverable = self.fold(ifContinuation = { _ => false }, ifSuccess = { _ => false }, ifHalted = { q => q.optRecover.isDefined })
 
-    def compose[OO,AA](that: State[O,OO,AA]) : State[I,OO,AA] = utility.composeStates(self, that)
+    def connect[OO,AA](that: State[O,OO,AA]) : State[I,OO,AA] = utility.connectStates(self, that)
 
     def toOption : Option[A] = {
       self match {
@@ -80,7 +80,7 @@ package object smach {
   }
 
   implicit class implicitStateMachineOps[I,O,A](val self: StateMachine[I,O,A]) extends AnyVal {
-    def compose[OO,AA](that: StateMachine[O,OO,AA]) : StateMachine[I,OO,AA] = utility.composeStateMachines(self, that)
+    def connect[OO,AA](that: StateMachine[O,OO,AA]) : StateMachine[I,OO,AA] = utility.connectStateMachines(self, that)
   }
 
   implicit class implicitEnumerableStateOps[O,A](val self: Enumerable.State[O,A]) extends AnyVal {
@@ -148,19 +148,19 @@ package object smach {
   }
 
   implicit class implicitStateMachineStateTuple2[A,B,C](val tuple: (State[Unit,A,_], State[A,B,C])) extends AnyVal {
-    def state = tuple._1 compose tuple._2
+    def state = tuple._1 connect tuple._2
   }
 
   implicit class implicitStateMachineTuple2[A,B,C](tuple: (StateMachine[Unit,A,_], StateMachine[A,B,C])) extends StateMachine[Unit,B,C] {
-    def s0 = tuple._1.s0 compose tuple._2.s0
+    def s0 = tuple._1.s0 connect tuple._2.s0
   }
 
   implicit class implicitStateMachineStateTuple3[A,B,C,D](val tuple: (State[Unit,A,_], State[A,B,_], State[B,C,D])) extends AnyVal {
-    def state = tuple._1 compose tuple._2 compose tuple._3
+    def state = tuple._1 connect tuple._2 connect tuple._3
   }
 
   implicit class implicitStateMachineTuple3[A,B,C,D](tuple: (StateMachine[Unit,A,_], StateMachine[A,B,_], StateMachine[B,C,D])) extends StateMachine[Unit,C,D] {
-    def s0 = tuple._1.s0 compose tuple._2.s0 compose tuple._3.s0
+    def s0 = tuple._1.s0 connect tuple._2.s0 connect tuple._3.s0
   }
 
 }

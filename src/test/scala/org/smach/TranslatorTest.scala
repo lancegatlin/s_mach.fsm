@@ -37,7 +37,7 @@ class TransformerTest extends FunSpec {
       val ls : List[String] = for(i <- l) yield i.toString
       val e : Enumerator[Int] = l.toEnumerator
       val t : Transformer[Int,String] = TestIntToStringTransformer()
-      val ei : Enumerator[String] = e compose t
+      val ei : Enumerator[String] = e connect t
       val result = ei.run()
       assert(result.output == ls)
     }
@@ -47,7 +47,7 @@ class TransformerTest extends FunSpec {
       val ls = l.foldLeft("") { _ + _.toString }
       val i : Iteratee[String,String] = TestAppendStringIteratee()
       val t : Transformer[Int,String] = TestIntToStringTransformer()
-      val it : Iteratee[Int,String] = t compose i
+      val it : Iteratee[Int,String] = t connect i
       // Note: utility functions called directly for testing purposes. An enumerator should be composed with the iteratee instead
       val result = utility.forceDoneTransition(utility.applySeqToState(l, it.s0))
       val optSum : Option[String] = result.state.toOption
@@ -59,7 +59,7 @@ class TransformerTest extends FunSpec {
       val ls : List[String] = for(i <- l) yield i.toString
       val e : Enumerator[Int] = TestRecoverEnumerator(l) // (n * 2) + ((n / 5) * 2)
       val t : Transformer[Int,String] = TestIntToStringTransformer() // (n * 2) + 2
-      val et : Enumerator[String] = e compose t
+      val et : Enumerator[String] = e connect t
       val (result,_) = et.run(HaltedRecoveryStrategy.LAX)
       val eMetadataCount = {
         val metadataFromTestRecoverEnumerator = (n/5)*2

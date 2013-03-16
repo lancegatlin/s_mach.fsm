@@ -49,13 +49,13 @@ class IterateeTest extends FunSpec {
       val t0h : Iteratee.Halt[Int,Int] = t0.asInstanceOf[Iteratee.Halt[Int,Int]]
       val s : Iteratee.State.Halted[Int,Int] = t0h.state
       val f : Plan.State.Halted[Int] => Boolean = { q => true }
-      val plan2 = t0h.overflow.toEnumerator compose s
+      val plan2 = t0h.overflow.toEnumerator connect s
       val (result2,_) = plan2.run(f)
       val optSum : Option[Int] = result2.state.toOption
       assert(optSum.isDefined && optSum.get == sum)
     }
     it("should be able to recover from a failure during flatMap/map [1/2]") {
-      // This test uses utility directly to isolate testing of flatMap/map from issues that might occur using compose & Plan
+      // This test uses utility directly to isolate testing of flatMap/map from issues that might occur using connect & Plan
       val n = STD_CHUNK_SIZE * 2
       val f : Iteratee.State.Halted[Int,Int] => Boolean = { q => true }
       val l = rnd.take(n).toList

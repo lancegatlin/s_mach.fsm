@@ -487,7 +487,7 @@ package object utility {
   }
   
   /**
-   * Compose two states into a composite state such that the output of s0 feeds the xs of s1
+   * Connect two states into a composite state such that the output of s0 feeds the input of s1
    * @param s0
    * @param s1
    * @tparam A
@@ -497,7 +497,7 @@ package object utility {
    * @tparam ZZ
    * @return
    */
-  def composeStates[A,B,C,D,ZZ](s0 : State[A,B,ZZ], s1 : State[B,C,D]) : State[A,C,D] = {
+  def connectStates[A,B,C,D,ZZ](s0 : State[A,B,ZZ], s1 : State[B,C,D]) : State[A,C,D] = {
     s0.fold(
       ifContinuation  =   s0 => s1.fold( ifContinuation = s1 => compose(s0,s1), ifSuccess = s1 => compose(s0,s1), ifHalted = s1 => compose(s0,s1,Seq.empty[B])),
       ifSuccess       =   s0 => s1.fold( ifContinuation = s1 => compose(s0,s1), ifSuccess = s1 => compose(s0,s1), ifHalted = s1 => compose(s0,s1,Seq.empty[B])),
@@ -506,12 +506,12 @@ package object utility {
   }
 
   // This is a case class instead of anonymous class for better debug messages
-  private[utility] case class CompositeStateMachine[A,B,C,D,ZZ](m0 : StateMachine[A,B,ZZ], m1 : StateMachine[B,C,D]) extends StateMachine[A,C,D] {
-    def s0 = composeStates(m0.s0,m1.s0)
+  private[utility] case class ConnectedStateMachine[A,B,C,D,ZZ](m0 : StateMachine[A,B,ZZ], m1 : StateMachine[B,C,D]) extends StateMachine[A,C,D] {
+    def s0 = connectStates(m0.s0,m1.s0)
   }
 
   /**
-   * Compose two state machines into a composite state machine such that the output of s0 feeds the xs of s1
+   * Connect two state machines into a composite state machine such that the output of s0 feeds the input of s1
    * @param m0
    * @param m1
    * @tparam A
@@ -521,8 +521,8 @@ package object utility {
    * @tparam ZZ
    * @return
    */
-  def composeStateMachines[A,B,C,D,ZZ](m0 : StateMachine[A,B,ZZ], m1 : StateMachine[B,C,D]) : StateMachine[A,C,D]
-    = CompositeStateMachine(m0,m1)
+  def connectStateMachines[A,B,C,D,ZZ](m0 : StateMachine[A,B,ZZ], m1 : StateMachine[B,C,D]) : StateMachine[A,C,D]
+    = ConnectedStateMachine(m0,m1)
 
 
 }

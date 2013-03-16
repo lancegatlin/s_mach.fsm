@@ -37,7 +37,7 @@ class PlanTest extends FunSpec {
       val sum = l.foldLeft(0) { _ + _ }
       val e : Enumerator[Int] = l.toEnumerator
       val i : Iteratee[Int,Int] = TestSumIntIteratee()
-      val ei : Plan[Int] = e compose i
+      val ei : Plan[Int] = e connect i
       val result = ei.run()
       val opt = result.state.toOption
       assert(opt.isDefined && opt.get == sum)
@@ -49,7 +49,7 @@ class PlanTest extends FunSpec {
       val e : Enumerator[Int] = l.toEnumerator
       val t : Transformer[Int,String] = TestIntToStringTransformer()
       val i : Iteratee[String,String] = TestAppendStringIteratee()
-      val eit : Plan[String] = e compose t compose i
+      val eit : Plan[String] = e connect t connect i
       val result = eit.run()
       val opt = result.state.toOption
       assert(opt.isDefined && opt.get == sum)
@@ -60,7 +60,7 @@ class PlanTest extends FunSpec {
       val sum = l.foldLeft(0) { _ + _ }
       val e : Enumerator[Int] = TestRecoverEnumerator(l)
       val i : Iteratee[Int,Int] = TestRecoverSumIntIteratee()
-      val ei : Plan[Int] = e compose i
+      val ei : Plan[Int] = e connect i
       val result = ei.run()
       val isRecover =
         result.state match {
@@ -80,7 +80,7 @@ class PlanTest extends FunSpec {
       val e : Enumerator[Int] = TestRecoverEnumerator(l) // (n * 2) + ((n / 5) * 2)
       val t : Transformer[Int,String] = TestIntToStringTransformer()  // (n * 2) + 2
       val i : Iteratee[String,String] = TestAppendStringIteratee() // (n * 2) + 2
-      val eit : Plan[String] = e compose t compose i
+      val eit : Plan[String] = e connect t connect i
       val (result,_) = eit.run(HaltedRecoveryStrategy.LAX)
 
       val metadataFromTestRecoverEnumerator = (n/5)*2
