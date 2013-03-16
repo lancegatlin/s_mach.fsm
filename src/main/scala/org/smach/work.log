@@ -199,6 +199,6 @@ TODO: replicate this error in a minimum test case and post bug to scala
 #2: Fixed inconsistent directory naming structure
 #3: Eliminated unused code
 #4: Renamed Parser -> StepMachine
-#5: Renamed Transformer -> Transformer
+#5: Renamed Translator -> Transformer
 #6: Renamed "compose" to "connect"
 #7: Changed enumerable run return type to DoneTransition

@@ -2,19 +2,19 @@
 [debug] Initial source changes: 
 [debug] 	removed:Set()
 [debug] 	added: Set()
-[debug] 	modified: Set(/home/lgatlin6/Code/smach/src/main/scala/org/smach/utility/package.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/package.scala)
+[debug] 	modified: Set(/home/lgatlin6/Code/smach/src/main/scala/org/smach/Enumerable/impl.scala)
 [debug] Removed products: Set()
 [debug] Modified external sources: Set()
 [debug] Modified binary dependencies: Set()
-[debug] Initial directly invalidated sources: Set(/home/lgatlin6/Code/smach/src/main/scala/org/smach/utility/package.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/package.scala)
+[debug] Initial directly invalidated sources: Set(/home/lgatlin6/Code/smach/src/main/scala/org/smach/Enumerable/impl.scala)
 [debug] 
 [debug] Sources indirectly invalidated by:
 [debug] 	product: Set()
 [debug] 	binary dep: Set()
 [debug] 	external source: Set()
-[debug] Initially invalidated: Set(/home/lgatlin6/Code/smach/src/main/scala/org/smach/utility/package.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/package.scala)
-[info] Compiling 2 Scala sources to /home/lgatlin6/Code/smach/target/scala-2.10/classes...
-[debug] Running cached compiler 6d052a4c, interfacing (CompilerInterface) with Scala compiler version 2.10.0
+[debug] Initially invalidated: Set(/home/lgatlin6/Code/smach/src/main/scala/org/smach/Enumerable/impl.scala)
+[info] Compiling 1 Scala source to /home/lgatlin6/Code/smach/target/scala-2.10/classes...
+[debug] Running cached compiler 4d522daa, interfacing (CompilerInterface) with Scala compiler version 2.10.0
 [debug] Calling Scala compiler with arguments  (CompilerInterface):
 [debug] 	-feature
 [debug] 	-unchecked
@@ -25,13 +25,13 @@
 [debug] 	/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/resources.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/rt.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/sunrsasign.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/jsse.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/jce.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/charsets.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/netx.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/plugin.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/rhino.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/modules/jdk.boot.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/classes:/home/lgatlin6/.sbt/boot/scala-2.10.0/lib/scala-library.jar
 [debug] 	-classpath
 [debug] 	/home/lgatlin6/Code/smach/target/scala-2.10/classes:/home/lgatlin6/.ivy2/cache/org.scalatest/scalatest_2.10/jars/scalatest_2.10-2.0.M5b.jar
-[debug] Scala compilation took 1.96198905 s
-[debug] 	Invalidated direct: Set(/home/lgatlin6/Code/smach/src/main/scala/org/smach/StepMachine/package.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/Transformer/MapTranslator.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/StateMachine.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/StepMachine/impl.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/utility/TraversableEnumerator.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/Enumerable/impl.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/Iteratee/package.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/Iteratee/impl.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/Transformer/package.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/HaltedRecoveryStrategy.scala)
-[debug] 	Invalidated direct: Set(/home/lgatlin6/Code/smach/src/main/scala/org/smach/Plan/package.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/Enumerable/package.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/Enumerator/package.scala)
+[debug] Scala compilation took 0.579876856 s
+[debug] 	Invalidated direct: Set(/home/lgatlin6/Code/smach/src/main/scala/org/smach/StepMachine/impl.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/package.scala)
+[debug] 	Invalidated direct: Set(/home/lgatlin6/Code/smach/src/main/scala/org/smach/StepMachine/package.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/Transformer/MapTranslator.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/utility/TraversableEnumerator.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/Iteratee/package.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/Iteratee/impl.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/Transformer/package.scala)
 [debug] 	Invalidated direct: Set()
-[debug] Incrementally invalidated: Set(/home/lgatlin6/Code/smach/src/main/scala/org/smach/StepMachine/package.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/Transformer/MapTranslator.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/StateMachine.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/StepMachine/impl.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/utility/TraversableEnumerator.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/utility/package.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/Enumerable/impl.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/Plan/package.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/Iteratee/package.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/Iteratee/impl.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/Transformer/package.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/Enumerable/package.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/package.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/HaltedRecoveryStrategy.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/Enumerator/package.scala)
-[info] Compiling 15 Scala sources to /home/lgatlin6/Code/smach/target/scala-2.10/classes...
-[debug] Running cached compiler 515cb3ba, interfacing (CompilerInterface) with Scala compiler version 2.10.0
+[debug] Incrementally invalidated: Set(/home/lgatlin6/Code/smach/src/main/scala/org/smach/StepMachine/package.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/Transformer/MapTranslator.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/StepMachine/impl.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/utility/TraversableEnumerator.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/Enumerable/impl.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/Iteratee/package.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/Iteratee/impl.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/Transformer/package.scala, /home/lgatlin6/Code/smach/src/main/scala/org/smach/package.scala)
+[info] Compiling 9 Scala sources to /home/lgatlin6/Code/smach/target/scala-2.10/classes...
+[debug] Running cached compiler 70b38068, interfacing (CompilerInterface) with Scala compiler version 2.10.0
 [debug] Calling Scala compiler with arguments  (CompilerInterface):
 [debug] 	-feature
 [debug] 	-unchecked
@@ -42,6 +42,6 @@
 [debug] 	/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/resources.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/rt.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/sunrsasign.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/jsse.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/jce.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/charsets.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/netx.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/plugin.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/rhino.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/modules/jdk.boot.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/classes:/home/lgatlin6/.sbt/boot/scala-2.10.0/lib/scala-library.jar
 [debug] 	-classpath
 [debug] 	/home/lgatlin6/Code/smach/target/scala-2.10/classes:/home/lgatlin6/.ivy2/cache/org.scalatest/scalatest_2.10/jars/scalatest_2.10-2.0.M5b.jar
-[debug] Scala compilation took 3.234015248 s
+[debug] Scala compilation took 1.717517243 s
 [debug] 	Invalidated direct: Set()
 [debug] Incrementally invalidated: Set()

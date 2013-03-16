@@ -2,29 +2,14 @@
 [debug] Initial source changes: 
 [debug] 	removed:Set()
 [debug] 	added: Set()
-[debug] 	modified: Set(/home/lgatlin6/Code/smach/src/test/scala/org/smach/TranslatorTest.scala, /home/lgatlin6/Code/smach/src/test/scala/org/smach/IterateeTest.scala, /home/lgatlin6/Code/smach/src/test/scala/org/smach/PlanTest.scala)
+[debug] 	modified: Set()
 [debug] Removed products: Set()
-[debug] Modified external sources: Set(org.smach.package$, org.smach.utility.package$)
+[debug] Modified external sources: Set()
 [debug] Modified binary dependencies: Set()
-[debug] Initial directly invalidated sources: Set(/home/lgatlin6/Code/smach/src/test/scala/org/smach/TranslatorTest.scala, /home/lgatlin6/Code/smach/src/test/scala/org/smach/IterateeTest.scala, /home/lgatlin6/Code/smach/src/test/scala/org/smach/PlanTest.scala)
+[debug] Initial directly invalidated sources: Set()
 [debug] 
 [debug] Sources indirectly invalidated by:
 [debug] 	product: Set()
 [debug] 	binary dep: Set()
-[debug] 	external source: Set(/home/lgatlin6/Code/smach/src/test/scala/org/smach/ParserTest.scala, /home/lgatlin6/Code/smach/src/test/scala/org/smach/test/TestSumIntIteratee.scala, /home/lgatlin6/Code/smach/src/test/scala/org/smach/test/TestAppendStringIteratee.scala, /home/lgatlin6/Code/smach/src/test/scala/org/smach/test/TestAlphaTranslator.scala, /home/lgatlin6/Code/smach/src/test/scala/org/smach/EnumeratorTest.scala, /home/lgatlin6/Code/smach/src/test/scala/org/smach/TranslatorTest.scala, /home/lgatlin6/Code/smach/src/test/scala/org/smach/IterateeTest.scala, /home/lgatlin6/Code/smach/src/test/scala/org/smach/test/TestRecoverSumIntIteratee.scala, /home/lgatlin6/Code/smach/src/test/scala/org/smach/PlanTest.scala, /home/lgatlin6/Code/smach/src/test/scala/org/smach/test/TestIntToStringTranslator.scala, /home/lgatlin6/Code/smach/src/test/scala/org/smach/test/TestRecoverEnumerator.scala, /home/lgatlin6/Code/smach/src/test/scala/org/smach/TraversableEnumeratorTest.scala)
-[debug] Initially invalidated: Set(/home/lgatlin6/Code/smach/src/test/scala/org/smach/ParserTest.scala, /home/lgatlin6/Code/smach/src/test/scala/org/smach/test/TestSumIntIteratee.scala, /home/lgatlin6/Code/smach/src/test/scala/org/smach/test/TestAppendStringIteratee.scala, /home/lgatlin6/Code/smach/src/test/scala/org/smach/test/TestAlphaTranslator.scala, /home/lgatlin6/Code/smach/src/test/scala/org/smach/EnumeratorTest.scala, /home/lgatlin6/Code/smach/src/test/scala/org/smach/TranslatorTest.scala, /home/lgatlin6/Code/smach/src/test/scala/org/smach/IterateeTest.scala, /home/lgatlin6/Code/smach/src/test/scala/org/smach/test/TestRecoverSumIntIteratee.scala, /home/lgatlin6/Code/smach/src/test/scala/org/smach/PlanTest.scala, /home/lgatlin6/Code/smach/src/test/scala/org/smach/test/TestIntToStringTranslator.scala, /home/lgatlin6/Code/smach/src/test/scala/org/smach/test/TestRecoverEnumerator.scala, /home/lgatlin6/Code/smach/src/test/scala/org/smach/TraversableEnumeratorTest.scala)
-[info] Compiling 12 Scala sources to /home/lgatlin6/Code/smach/target/scala-2.10/test-classes...
-[debug] Running cached compiler 5860bf55, interfacing (CompilerInterface) with Scala compiler version 2.10.0
-[debug] Calling Scala compiler with arguments  (CompilerInterface):
-[debug] 	-feature
-[debug] 	-unchecked
-[debug] 	-deprecation
-[debug] 	-d
-[debug] 	/home/lgatlin6/Code/smach/target/scala-2.10/test-classes
-[debug] 	-bootclasspath
-[debug] 	/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/resources.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/rt.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/sunrsasign.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/jsse.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/jce.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/charsets.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/netx.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/plugin.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/rhino.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/modules/jdk.boot.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/classes:/home/lgatlin6/.sbt/boot/scala-2.10.0/lib/scala-library.jar
-[debug] 	-classpath
-[debug] 	/home/lgatlin6/Code/smach/target/scala-2.10/test-classes:/home/lgatlin6/Code/smach/target/scala-2.10/classes:/home/lgatlin6/.ivy2/cache/org.scalatest/scalatest_2.10/jars/scalatest_2.10-2.0.M5b.jar
-[debug] Scala compilation took 2.204887349 s
-[debug] 	Invalidated direct: Set()
-[debug] Incrementally invalidated: Set()
+[debug] 	external source: Set()
+[debug] Initially invalidated: Set()

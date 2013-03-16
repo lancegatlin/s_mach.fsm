@@ -73,7 +73,7 @@ object impl {
    * @tparam A
    * @return
    */
-  def runEnumerableTransition[O,A](t0 : Transition[O,A], _haltedRecoveryStrategy: HaltedRecoveryStrategy[Unit,O,A]) : (Transition[O,A], HaltedRecoveryStrategy[Unit,O,A]) = {
+  def runEnumerableTransition[O,A](t0 : Transition[O,A], _haltedRecoveryStrategy: HaltedRecoveryStrategy[Unit,O,A]) : (DoneTransition[O,A], HaltedRecoveryStrategy[Unit,O,A]) = {
     var done = false
     val accumulator = utility.TransitionAccumulator(t0)
     var haltedRecoveryStrategy = _haltedRecoveryStrategy
@@ -98,7 +98,7 @@ object impl {
         }
       )
     } while(done == false)
-    (accumulator.toTransition, haltedRecoveryStrategy)
+    (utility.forceDoneTransition(accumulator.toTransition), haltedRecoveryStrategy)
   }
 
   /**
