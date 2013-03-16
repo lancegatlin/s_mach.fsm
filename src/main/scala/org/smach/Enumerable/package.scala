@@ -88,18 +88,4 @@ package object Enumerable {
     ) = StateMachine.Halt.fatal[Unit,O,A](message=message, cause=cause, output=output, metadata=metadata)
   }
 
-  /*
-    Γ => output alphabet
-    S => set of states
-    s0 => initial state (s0 ∈ S)
-    ∂ => state that can be transitioned
-    F => set of final states (F ⊂ S)
-  */
-//  type  S  [Γ,A]   =   State                [Γ,A]
-//  type  F  [Γ,A]   =   State.Done           [Γ,A]
-//  type  ∂  [Γ,A]   =   State.Continue       [Γ,A]
-//
-//  val   ⊳        =   Continue
-//  val   ⊡        =   Success
-//  val   ⊠        =   Issue
 }

@@ -82,22 +82,6 @@ package object utility {
     r.toTransition
   }
 
-//  /**
-//   * Force a state to be either Success or Failure by applying EndOfInput when required
-//   * @param state
-//   * @tparam I
-//   * @tparam O
-//   * @tparam A
-//   * @return
-//   */
-//  def forceDoneState[I,O,A](state: State[I,O,A]) : Transition[I,O,A] = {
-//    state.doneFold(
-//      ifContinuation = { s => s.apply(EndOfInput) },
-//      ifSuccess = { s => Transition(s) },
-//      ifHalted = { s => Transition(s) }
-//    )
-//  }
-
   /**
    * Force a Transition to be either Succeed or Halt by applying EndOfInput when required and
    * accumulate the Transitions.
@@ -202,20 +186,6 @@ package object utility {
     )
   }
 
-
-//  @tailrec def applySeqToState[I,O,A](t: Result[I,O,A], input: Seq[I]) : Result[I,O,A] = {
-//    // Note: can't use state.accumulateTransitions because of tailrec optimization
-//    t.state match {
-//      case q : State.Continue[I,O,A] =>
-//        input match {
-//          case Nil => t
-//          case head :: tail => applySeqToState(accumulateTransitions(t,q(head)),tail)
-//        }
-//      case q : State.Success[I,O,A] => t.copy(overflow = input ++ t.overflow)
-//      case q : State.Failure[I,O,A] => t.copy(overflow = input ++ t.overflow)
-//    }
-//  }
-//
 
   /**
    * A case class for an accumulator of Transitions.

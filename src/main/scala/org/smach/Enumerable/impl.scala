@@ -23,7 +23,6 @@ package org.smach.Enumerable
 
 import org.smach._
 import org.smach.utility
-import org.smach.IssueSeverityCode._
 import scala.collection.immutable.Seq
 
 object impl {
@@ -102,16 +101,6 @@ object impl {
     (accumulator.toTransition, haltedRecoveryStrategy)
   }
 
-  // Previous functional implementation of runEnumerableTransition
-  //  @tailrec def runEnumerableTransition[O,A](t: Transition[O,A], buffer: scala.collection.mutable.Buffer) : Transition[O,A] = {
-  //    // Note: can't use state.foldTransitions because of tailrec optimization
-  //    t.state match {
-  //      case q : State.Continue[O,A] => runEnumerableTransition(foldTransitions(t,q(())))
-  //      case q : State.Success[O,A] => t
-  //      case q : State.Failure[O,A] => t
-  //    }
-  //  }
-
   /**
    * Step an Enumerable.State until it returns Success/Failure with the option to recover from all recoverable Failures
    * @param s
@@ -138,79 +127,6 @@ object impl {
    * @return
    */
   def runEnumerable[O,A](m: Enumerable[O,A], haltedRecoveryStrategy: HaltedRecoveryStrategy[Unit,O,A]) : (Transition[O,A],HaltedRecoveryStrategy[Unit,O,A]) = runEnumerableState(m.s0, haltedRecoveryStrategy)
-
-
-//  /**
-//   * Extract the value of an Enumerable transition (or Halted state) and make this value the output of a Translator
-//   * @param t
-//   * @param ifSuccess
-//   * @tparam O
-//   * @tparam A
-//   * @tparam II
-//   * @return
-//   */
-//  def mapEnumerableTransitionToTranslator[O,A,II,OO](t: Transition[O,A], ifSuccess: A => Translator.Transition[II,OO]) : Translator.Transition[II,OO] = {
-//    t.state.doneFold(
-//      ifContinuation = { q =>
-//        // Run the enumerable to extract the value or get a halted state
-//        val (t0, _) = Enumerable.impl.runEnumerableTransition(t, HaltedRecoveryStrategy.STRICT[Unit,O,A])
-//        // Run enumerable only returns Success/Halted but because it returns Transition this isn't captured by type system - so there can't be infinite recursion here
-//        mapEnumerableTransitionToTranslator(t0, ifSuccess)
-//      },
-//      ifSuccess = { q =>
-//        val t0 = ifSuccess(q.value)
-//        t0.copy(metadata = t0.metadata ++ t.metadata)
-//      },
-//      ifHalted = { q =>
-//        val optRecover : Option[() => Translator.Transition[II,OO]] = q.optRecover map { recover => () =>
-//          mapEnumerableTransitionToTranslator(recover(),ifSuccess)
-//        }
-//        Translator.Halt(
-//          issues = q.issues,
-//          optRecover = optRecover,
-//          metadata = t.metadata
-//        )
-//      }
-//    )
-//  }
-
-
-//  /**
-//   * Extract the value of an Enumerable transition (or Halted state) and make this value the value of an Iteratee
-//   * @param t
-//   * @tparam O
-//   * @tparam A
-//   * @tparam II
-//   * @tparam OO
-//   * @tparam AA
-//   * @return
-//   */
-//  def mapEnumerableToIterateeValue[O,A,II,OO,AA](t: Transition[O,A], f: A => AA) : StateMachine.Transition[II,OO,AA] = {
-//    t.state.doneFold(
-//      ifContinuation = { q =>
-//        // Run the enumerable to extract the value or get a halted state
-//        val (t0, _) = Enumerable.impl.runEnumerableTransition(t, HaltedRecoveryStrategy.STRICT[Unit,O,A])
-//        // Run enumerable only returns Success/Halted but because it returns Transition this isn't captured by type system - so there can't be infinite recursion here
-//        mapEnumerableToIterateeValue(t0,f)
-//      },
-//      ifSuccess = { q =>
-//        StateMachine.Succeed(
-//          value = f(q.value),
-//          metadata = t.metadata
-//        )
-//      },
-//      ifHalted = { q =>
-//        val optRecover : Option[() => StateMachine.Transition[II,OO,AA]] = q.optRecover map { recover => () =>
-//          mapEnumerableToIterateeValue(recover(),f)
-//        }
-//        StateMachine.Halt(
-//          issues = q.issues,
-//          optRecover = optRecover,
-//          metadata = t.metadata
-//        )
-//      }
-//    )
-//  }
 
   /**
    * Map an Enumerable Transition in terms of bind/flatMap

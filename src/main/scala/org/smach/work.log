@@ -189,3 +189,16 @@ Mar 10
 
 #1: TODO: change Enumerable run return type to DoneTransition
 #2: TODO: Rename compose to connect
+
+Mar 16:
+#1: A note on the strange architecture of using package objects instead of packages for Enumerator,Iteratee,etc. Using package objects is necessary because of
+a bug in the scala compiler. When Enumerator is specified as an object (as it should be), the following error results:
+[error] bad symbolic reference. A signature in package.class refers to type DoneTransition
+[error] in object org.smach.Enumerable which is not available.
+TODO: replicate this error in a minimum test case and post bug to scala
+#2: Fixed inconsistent directory naming structure
+#3: Eliminated unused code
+#4: Renamed Parser -> StepMachine
+#5: Renamed Translator -> Transformer
+#6: Renamed "compose" to "connect"
+#7: Changed enumerable run return type to DoneTransition

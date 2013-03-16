@@ -28,9 +28,6 @@ package object smach {
   type  EOI               =   EndOfInput
   val   EOI               =   EndOfInput
 
-//  type  ∅                 =   Unit
-//  val   ∅                 =   Unit
-
   type  Enumerator[O]     =   StateMachine[Unit,O,Unit]
   type  Enumerable[O,A]   =   StateMachine[Unit,O,A]
   type  Iteratee[I,A]     =   StateMachine[I,Unit,A]

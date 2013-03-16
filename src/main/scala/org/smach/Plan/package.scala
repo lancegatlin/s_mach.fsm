@@ -21,7 +21,6 @@
 */
 package org.smach
 
-import IssueSeverityCode._
 import scala.collection.immutable.Seq
 
 package object Plan {

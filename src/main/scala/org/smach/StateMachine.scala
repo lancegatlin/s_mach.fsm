@@ -53,18 +53,6 @@ object StateMachine {
     def fold[X](ifSucceed: Succeed[I,O,A] => X, ifHalt: Halt[I,O,A] => X, ifContinue: Continue[I,O,A] => X) = ifContinue(this)
   }
 
-//  object Continue {
-//    def apply[I,O,A](
-//      state       :   State.Continuation[I,O,A],
-//      output      :   Seq[O]                        = Seq.empty,
-//      metadata    :   Seq[Any]                      = Seq.empty
-//    ) = new Continue[I,O,A](
-//      state     =   state,
-//      output    =   output,
-//      metadata  =   metadata
-//    )
-//  }
-
   sealed trait DoneTransition[I,O,A] extends Transition[I,O,A] {
     def doneFold[X](ifSucceed: Succeed[I,O,A] => X, ifHalt: Halt[I,O,A] => X) : X
     override def state : State.Done[I,O,A]
@@ -230,21 +218,4 @@ object StateMachine {
     }
   }
 
-  /*
-  ∑ => input alphabet
-  Γ => output alphabet
-  S => set of states
-  s0 => initial state (s0 ∈ S)
-  ∂ => state that can be transitioned
-  F => set of final states (F ⊂ S)
-  ∅ => 1) the type of the empty set 2) instance of the empty set
-  EOI => 1) type of end of input 2) instance of end of input
-   */
-//  type  S  [∑,Γ,A]   =   State                [∑,Γ,A]
-//  type  F  [∑,Γ,A]   =   State.Done           [∑,Γ,A]
-//  type  ∂  [∑,Γ,A]   =   State.Continuation       [∑,Γ,A]
-//
-//  val   ⊳            =   Continue
-//  val   ⊡            =   Success
-//  val   ⊠            =   Issue
 }

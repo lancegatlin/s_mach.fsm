@@ -1,3 +1,24 @@
+/*
+    Copyright 2013 Lance Gatlin
+
+    Author: lance.gatlin@gmail.com
+
+    This file is part of org.smach library.
+
+    org.smach library is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    org.smach library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with org.smach library. If not, see <http://www.gnu.org/licenses/>.
+
+*/
 package org.smach
 
 import scala.collection.immutable.Seq
@@ -5,12 +26,6 @@ import scala.collection.immutable.Seq
 package object Parser {
 
   type Transition[A] = StateMachine.DoneTransition[Unit,Unit,A]
-//  object Transition {
-//    def apply[A](
-//      state     :   State[A],
-//      metadata  :   Seq[Any]                      = Seq.empty
-//    ) = StateMachine.Transition[Unit,Unit,A](state=state, metadata=metadata)
-//  }
 
   type State[A] = StateMachine.State.Done[Unit,Unit,A]
   object State {
@@ -56,22 +71,5 @@ package object Parser {
   }
 
   def tell[A] : Parser[A,A] = a => Succeed(a)
-
-    /*
-  ∑ => input alphabet
-  S => set of states
-  s0 => initial state (s0 ∈ S)
-  ∂ => transition function
-  F => set of final states (F ⊂ S)
-  A => final success value type
-  ∅ => 1) the type of the empty set 2) instance of the empty set
-   */
-//  type  S  [∑,A]   =   State                      [∑,A]
-//  type  F  [∑,A]   =   State.Done                 [∑,A]
-//  type  ∂  [∑,A]   =   State.Continue             [∑,A]
-//
-//  val   ⊳          =   Continue
-//  val   ⊡          =   Success
-//  val   ⊠          =   Issue
 
 }
