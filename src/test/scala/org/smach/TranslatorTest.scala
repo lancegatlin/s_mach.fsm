@@ -27,16 +27,16 @@ import test._
 import org.smach.Enumerator.STD_CHUNK_SIZE
 import scala.collection.immutable.Seq
 
-class TranslatorTest extends FunSpec {
+class TransformerTest extends FunSpec {
   val rnd = Stream.continually(Random.nextInt(100))
 
-  describe("A Translator[I,O]") {
+  describe("A Transformer[I,O]") {
     it("should be composable with an Enumerator to form a new Enumerator") {
       val n = STD_CHUNK_SIZE * 2
       val l : List[Int] = rnd.take(n).toList
       val ls : List[String] = for(i <- l) yield i.toString
       val e : Enumerator[Int] = l.toEnumerator
-      val t : Translator[Int,String] = TestIntToStringTranslator()
+      val t : Transformer[Int,String] = TestIntToStringTransformer()
       val ei : Enumerator[String] = e compose t
       val result = ei.run()
       assert(result.output == ls)
@@ -46,7 +46,7 @@ class TranslatorTest extends FunSpec {
       val l = rnd.take(n).toList
       val ls = l.foldLeft("") { _ + _.toString }
       val i : Iteratee[String,String] = TestAppendStringIteratee()
-      val t : Translator[Int,String] = TestIntToStringTranslator()
+      val t : Transformer[Int,String] = TestIntToStringTransformer()
       val it : Iteratee[Int,String] = t compose i
       // Note: utility functions called directly for testing purposes. An enumerator should be composed with the iteratee instead
       val result = utility.forceDoneTransition(utility.applySeqToState(l, it.s0))
@@ -58,7 +58,7 @@ class TranslatorTest extends FunSpec {
       val l : List[Int] = rnd.take(n).toList
       val ls : List[String] = for(i <- l) yield i.toString
       val e : Enumerator[Int] = TestRecoverEnumerator(l) // (n * 2) + ((n / 5) * 2)
-      val t : Translator[Int,String] = TestIntToStringTranslator() // (n * 2) + 2
+      val t : Transformer[Int,String] = TestIntToStringTransformer() // (n * 2) + 2
       val et : Enumerator[String] = e compose t
       val (result,_) = et.run(HaltedRecoveryStrategy.LAX)
       val eMetadataCount = {
@@ -77,9 +77,9 @@ class TranslatorTest extends FunSpec {
     it("should accumulate Transitions in the correct order") {
       val abc = 'a' to 'z' map { _.toString }
       val cba = 'z'.toByte to 'a'.toByte by -1 map { _.toChar.toString }
-      val tr : Translator[String,String] = TestAlphaTranslator()
+      val tr : Transformer[String,String] = TestAlphaTransformer()
       // Note: utility functions called directly for testing purposes. An enumerator should be composed with the iteratee instead
-      val result : Translator.Transition[String,String] = utility.applySeqToState(abc.toList,tr.s0)
+      val result : Transformer.Transition[String,String] = utility.applySeqToState(abc.toList,tr.s0)
       assert(result.output == cba)
     }
 

@@ -42,12 +42,12 @@ class PlanTest extends FunSpec {
       val opt = result.state.toOption
       assert(opt.isDefined && opt.get == sum)
     }
-    it("should be composable from an Enumerator, any number of Translators and an Iteratee") {
+    it("should be composable from an Enumerator, any number of Transformers and an Iteratee") {
       val n = STD_CHUNK_SIZE * 2
       val l : List[Int] = rnd.take(n).toList
       val sum = l.foldLeft("") { _ + _.toString }
       val e : Enumerator[Int] = l.toEnumerator
-      val t : Translator[Int,String] = TestIntToStringTranslator()
+      val t : Transformer[Int,String] = TestIntToStringTransformer()
       val i : Iteratee[String,String] = TestAppendStringIteratee()
       val eit : Plan[String] = e compose t compose i
       val result = eit.run()
@@ -78,7 +78,7 @@ class PlanTest extends FunSpec {
       val l : List[Int] = rnd.take(n).toList
       val sum = l.foldLeft("") { _ + _.toString }
       val e : Enumerator[Int] = TestRecoverEnumerator(l) // (n * 2) + ((n / 5) * 2)
-      val t : Translator[Int,String] = TestIntToStringTranslator()  // (n * 2) + 2
+      val t : Transformer[Int,String] = TestIntToStringTransformer()  // (n * 2) + 2
       val i : Iteratee[String,String] = TestAppendStringIteratee() // (n * 2) + 2
       val eit : Plan[String] = e compose t compose i
       val (result,_) = eit.run(HaltedRecoveryStrategy.LAX)

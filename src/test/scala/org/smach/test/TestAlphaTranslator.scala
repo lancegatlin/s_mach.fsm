@@ -25,14 +25,14 @@ import org.smach._
 import collection.immutable.NumericRange
 import scala.collection.immutable.Seq
 
-object TestAlphaTranslator {
-  val log = Log(classOf[TestAlphaTranslator])
+object TestAlphaTransformer {
+  val log = Log(classOf[TestAlphaTransformer])
   val abc = 'a' to 'z' map { _.toString }
   val cba = 'z'.toByte to 'a'.toByte by -1 map { _.toChar.toString }
 }
-case class TestAlphaTranslator() extends Translator[String, String] {
-  import Translator._
-  import TestAlphaTranslator._
+case class TestAlphaTransformer() extends Transformer[String, String] {
+  import Transformer._
+  import TestAlphaTransformer._
 
   case class Cont(idx : Int) extends State.Continuation[String, String] {
     def apply(x : String) = {

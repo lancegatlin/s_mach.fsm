@@ -1,14 +1,14 @@
-[debug] Running Test org.smach.TraversableEnumeratorTest : subclass(false, org.scalatest.Suite) with arguments 
-[debug] Running Test org.smach.IterateeTest : subclass(false, org.scalatest.Suite) with arguments 
+[debug] Running Test org.smach.TransformerTest : subclass(false, org.scalatest.Suite) with arguments 
 [debug] Running Test org.smach.EnumeratorTest : subclass(false, org.scalatest.Suite) with arguments 
-[debug] Running Test org.smach.TranslatorTest : subclass(false, org.scalatest.Suite) with arguments 
-[debug] Running Test org.smach.StepMachineTest : subclass(false, org.scalatest.Suite) with arguments 
+[debug] Running Test org.smach.IterateeTest : subclass(false, org.scalatest.Suite) with arguments 
 [debug] Running Test org.smach.PlanTest : subclass(false, org.scalatest.Suite) with arguments 
+[debug] Running Test org.smach.StepMachineTest : subclass(false, org.scalatest.Suite) with arguments 
+[debug] Running Test org.smach.TraversableEnumeratorTest : subclass(false, org.scalatest.Suite) with arguments 
 [info] Passed: : Total 30, Failed 0, Errors 0, Passed 30, Skipped 0
 [debug] Passed tests:
-[debug] 	org.smach.TranslatorTest
 [debug] 	org.smach.StepMachineTest
 [debug] 	org.smach.TraversableEnumeratorTest
 [debug] 	org.smach.EnumeratorTest
 [debug] 	org.smach.IterateeTest
+[debug] 	org.smach.TransformerTest
 [debug] 	org.smach.PlanTest

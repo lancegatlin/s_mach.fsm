@@ -31,7 +31,7 @@ package object smach {
   type  Enumerator[O]     =   StateMachine[Unit,O,Unit]
   type  Enumerable[O,A]   =   StateMachine[Unit,O,A]
   type  Iteratee[I,A]     =   StateMachine[I,Unit,A]
-  type  Translator[I,O]   =   StateMachine[I,O,Unit]
+  type  Transformer[I,O]   =   StateMachine[I,O,Unit]
   type  Plan[A]           =   StateMachine[Unit,Unit,A]
 
   type  StepMachine[I,A]       =   I => StepMachine.Transition[A]

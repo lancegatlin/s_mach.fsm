@@ -91,19 +91,19 @@ class StepMachineTest extends FunSpec {
       val t1 : StepMachine.Transition[Int] = utility.forceDoneTransition(t0.state.asInstanceOf[StepMachine.State.Halted[Int]].optRecover.get())
       assert(t1 == StepMachine.Succeed(List(1,2,100,3,4)))
     }
-    it("Transition should be convertable to a Translator Transition") {
+    it("Transition should be convertable to a Transformer Transition") {
       val v : Seq[String] = "1 2 asdf 3 4".split("\\s+").toIndexedSeq
       val t : Seq[StepMachine.Transition[Int]] =  v map { s => StepMachine1(s) }
       val t0 : StepMachine.Transition[Seq[Int]] = t.sequence
       assert(t0.state.isHalted && t0.state.isRecoverable)
       // this never gets used
-      val temp = new Translator.State.Continuation[Float,Int] {
+      val temp = new Transformer.State.Continuation[Float,Int] {
         def apply(x: Float) = ???
         def apply(x: EndOfInput) = ???
       }
-      val t1 : Translator.Transition[Float,Int] = t0.asTransition.flatMap { xs => Translator.Continue[Float,Int](state=temp, output=xs) }
+      val t1 : Transformer.Transition[Float,Int] = t0.asTransition.flatMap { xs => Transformer.Continue[Float,Int](state=temp, output=xs) }
       assert(t1.state.isHalted && t1.state.isRecoverable)
-      val t2 : Translator.Transition[Float,Int] = t1.state.asInstanceOf[Translator.State.Halted[Float,Int]].optRecover.get()
+      val t2 : Transformer.Transition[Float,Int] = t1.state.asInstanceOf[Transformer.State.Halted[Float,Int]].optRecover.get()
       println(t2)
       assert(t2.isContinue && t2.output == List(1,2,100,3,4))
     }

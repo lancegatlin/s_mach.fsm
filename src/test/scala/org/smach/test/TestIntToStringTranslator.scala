@@ -25,12 +25,12 @@ package org.smach.test
 import org.smach._
 import scala.collection.immutable.Seq
 
-object TestIntToStringTranslator {
-  val log = Log(classOf[TestIntToStringTranslator])
+object TestIntToStringTransformer {
+  val log = Log(classOf[TestIntToStringTransformer])
 }
-case class TestIntToStringTranslator() extends Translator[Int, String] {
-  import Translator._
-  import TestIntToStringTranslator._
+case class TestIntToStringTransformer() extends Transformer[Int, String] {
+  import Transformer._
+  import TestIntToStringTransformer._
   case class Cont() extends State.Continuation[Int,String]  {
 
     def apply(item: Int) = {

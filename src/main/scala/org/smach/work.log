@@ -29,7 +29,7 @@ Working on rewrite
 #3b: O,I would need a way to represent "empty" most likely Monoid.zero
 #3c: While this makes this library simpler in design by making it more generic, it probably won't simplify the use of it by later code, but will instead complicate it.
 
-#4: There appear to be two distinct "types" of machines: 1) continuous output machines (enumerators, translators) and machines that only output on success (iteratee).
+#4: There appear to be two distinct "types" of machines: 1) continuous output machines (enumerators, Transformers) and machines that only output on success (iteratee).
 Currently, this distinction is ignored. This leads to difficulty using the classes idiomatically
 #4a: XXX[I,O] could be modified to XXX[I,S,O] where I is input-type, S state-type and O is output-type. S is present in Continue/Failure/Success, O is only present in Success
 
@@ -145,7 +145,7 @@ Feb 17
 #1: Working on StepMachine
 #1a: What's my goal here?
 #1aa: I'm trying to create composable StepMachine results - given a bunch of StepMachines that have all received some input and produced a result, I need to compose the results such that if any of the results are Halted, then the composed result is Halted
-#1ab: I also need an idiomatic way to convert a StepMachine result to either an Iteratee or a Translator Transition
+#1ab: I also need an idiomatic way to convert a StepMachine result to either an Iteratee or a Transformer Transition
 #2: Where possible converted implicit classes to implicit value classes to eliminate unboxing
 #3: Should I convert Transition to a sealed trait base class and move parameters to their appropriate sub-types?
 #3aa: This is will result in a large rewrite of the code base
@@ -198,7 +198,7 @@ a bug in the scala compiler. When Enumerator is specified as an object (as it sh
 TODO: replicate this error in a minimum test case and post bug to scala
 #2: Fixed inconsistent directory naming structure
 #3: Eliminated unused code
-#4: Renamed StepMachine -> StepMachine
-#5: Renamed Translator -> Transformer
+#4: Renamed Parser -> StepMachine
+#5: Renamed Transformer -> Transformer
 #6: Renamed "compose" to "connect"
 #7: Changed enumerable run return type to DoneTransition
