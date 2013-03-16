@@ -34,7 +34,7 @@ package object smach {
   type  Translator[I,O]   =   StateMachine[I,O,Unit]
   type  Plan[A]           =   StateMachine[Unit,Unit,A]
 
-  type  Parser[I,A]       =   I => Parser.Transition[A]
+  type  StepMachine[I,A]       =   I => StepMachine.Transition[A]
 
   implicit class traversableToEnumerator[A](val self: Traversable[A]) extends AnyVal {
     def toEnumerator = utility.TraversableEnumerator(self, Enumerator.STD_CHUNK_SIZE)
@@ -131,9 +131,9 @@ package object smach {
     def sequence : Enumerable.DoneTransition[O,Seq[A]] = Enumerable.impl.sequenceEnumerableDoneTransitionTraversable(self)
   }
 
-  implicit class implicitParserOps[A,B](val self: Parser[A,B]) extends AnyVal {
-    def map[C](f: B => C) : Parser[A,C] = Parser.impl.mapParser(self, f)
-    def flatMap[C](f: B => Parser[A,C]) : Parser[A,C] = Parser.impl.flatMapParser(self,f)
+  implicit class implicitStepMachineOps[A,B](val self: StepMachine[A,B]) extends AnyVal {
+    def map[C](f: B => C) : StepMachine[A,C] = StepMachine.impl.mapStepMachine(self, f)
+    def flatMap[C](f: B => StepMachine[A,C]) : StepMachine[A,C] = StepMachine.impl.flatMapStepMachine(self,f)
   }
 
   implicit class implicitIterateeContinuationFromFunction[I,A](f: Input[I] => Iteratee.Transition[I,A]) extends Iteratee.State.Continuation[I,A] {

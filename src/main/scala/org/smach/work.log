@@ -37,7 +37,7 @@ Currently, this distinction is ignored. This leads to difficulty using the class
 #5a: This creates problems with List[O], specifically:
 #5aa: XmlReader would need to be Enumerator[(XmlEvent, List[Issue])]
 #5ab: XmlWriter would need to be Iteratee[XmlEvent,Issue]
-#5ac: XmlToXsdParser would need to be Iteratee[XmlEvent,(XsdEvent,List[Issue])]
+#5ac: XmlToXsdStepMachine would need to be Iteratee[XmlEvent,(XsdEvent,List[Issue])]
 #5b: How would you get issues out if there was no output?
 
 #6: Should Issue be replaced with a simple Metadata trait
@@ -116,7 +116,7 @@ Feb 4
 
 Feb 5
 #1: Should recovery by utility functions be limited to a maximum number of tries to prevent infinite recover loops?
-#2: Parsers, Partial parsers, how best to implement them using this framework?
+#2: StepMachines, Partial StepMachines, how best to implement them using this framework?
 #3: Should Input[A] be added?
 #3a: This could be implemented on top of the framework by adding Input[A] and an implicit conversion for f: Input[A] => Transition[I,O,A] to a Continuation[I,O,A] with methods implemented in terms of f
 #4: Should Transition be specialized into Succeed, Halt and Continue case classes?
@@ -133,25 +133,25 @@ Feb 11
 #2: Swapped return parameters for HaltedRecoveryStrategy.recoverXXX to align with Enumerable.impl.runEnumerable
 
 Feb 12
-#1: I need a way to combine the outputs of single input parsers (A => Iteratee.Done[A,B]) into an arbitrary Transition output
-#1a: The problem is that if the single input parser returns Halted the encapsulating output should also return a Halted that will recover the inner Halted and then proceed with further processing
+#1: I need a way to combine the outputs of single input StepMachines (A => Iteratee.Done[A,B]) into an arbitrary Transition output
+#1a: The problem is that if the single input StepMachine returns Halted the encapsulating output should also return a Halted that will recover the inner Halted and then proceed with further processing
 #1b: Using A => Iteratee.Done[A,B] almost works except that optRecover () => Transition[A,B] can return a Continuation among other invalid states
 
 Feb 16
-#1: Using I => Plan.State.Done[A] as a "parser"
-#1aa: Main issue with this is that the recover for a plan returns a Transition, which is meaningless for Parser
+#1: Using I => Plan.State.Done[A] as a "StepMachine"
+#1aa: Main issue with this is that the recover for a plan returns a Transition, which is meaningless for StepMachine
 
 Feb 17
-#1: Working on Parser
+#1: Working on StepMachine
 #1a: What's my goal here?
-#1aa: I'm trying to create composable parser results - given a bunch of parsers that have all received some input and produced a result, I need to compose the results such that if any of the results are Halted, then the composed result is Halted
-#1ab: I also need an idiomatic way to convert a parser result to either an Iteratee or a Translator Transition
+#1aa: I'm trying to create composable StepMachine results - given a bunch of StepMachines that have all received some input and produced a result, I need to compose the results such that if any of the results are Halted, then the composed result is Halted
+#1ab: I also need an idiomatic way to convert a StepMachine result to either an Iteratee or a Translator Transition
 #2: Where possible converted implicit classes to implicit value classes to eliminate unboxing
 #3: Should I convert Transition to a sealed trait base class and move parameters to their appropriate sub-types?
 #3aa: This is will result in a large rewrite of the code base
-#4: Generalized Parser impl flatpMap/map to Enumerable
-#5: Added Enumerable.Transition.toOutput and Enumerable.Transition.toValue for converting an Enumerable (Parser) Transition to another type of transition
-#6: Note that both Enumerable flatMap/map and toOutput/toValue cause the state to be run if it is in the continuation state. Since Parser is never in the continuation state, this has not been a problem so far.
+#4: Generalized StepMachine impl flatpMap/map to Enumerable
+#5: Added Enumerable.Transition.toOutput and Enumerable.Transition.toValue for converting an Enumerable (StepMachine) Transition to another type of transition
+#6: Note that both Enumerable flatMap/map and toOutput/toValue cause the state to be run if it is in the continuation state. Since StepMachine is never in the continuation state, this has not been a problem so far.
 
 Feb 18
 
@@ -164,15 +164,15 @@ Feb 19-27
 Feb 26
 
 #1: TODO: Change apply(EndOfInput) : Transition to apply(EndOfInput) : DoneTransition
-#2: Should Parser[A] = I => StateMachine.Transition[Unit,Unit,A] be changed to I => StateMachine.DoneTransition[Unit,Unit,A] ?
+#2: Should StepMachine[A] = I => StateMachine.Transition[Unit,Unit,A] be changed to I => StateMachine.DoneTransition[Unit,Unit,A] ?
 #2aa: Halted.optRecover will always return a Transition, so users will always ultimately have to deal with Continue/Continuation
-#2ab: Should Parser be a completely different type, independent of the StateMachine structure?
+#2ab: Should StepMachine be a completely different type, independent of the StateMachine structure?
 #2ac: Changing to DoneTransition will require adding flatMap/map methods for Enumerable DoneTransitions
 
 Feb 27
 
-#1: Completed change Parser[A] I => Transition to I => DoneTransition
-#1a: Modified forceDoneState/forceDoneTransition to throw IllegalStateException if Continue is returned after application of EndOfInput. Recover from Parser.Halt should utilize forceDone.
+#1: Completed change StepMachine[A] I => Transition to I => DoneTransition
+#1a: Modified forceDoneState/forceDoneTransition to throw IllegalStateException if Continue is returned after application of EndOfInput. Recover from StepMachine.Halt should utilize forceDone.
 #2: Changed apply(EndOfInput) : Transition to apply(EndOfInput) : DoneTransition
 
 Mar 1
@@ -180,7 +180,7 @@ Mar 1
 #1: TODO: rename "Transition" Edge or Delta
 #2: TODO: remove output from Succeed/Halt
 #3: TODO: combine Succeed/Success and Halt/Halted keep Continue/Continuation distinction
-#4: TODO: rename Parser StepMachine
+#4: TODO: rename StepMachine StepMachine
 #5: TODO: a function that can "parallel" compose Iteratees of the same type so that the input is applied to both Iteratees and the output is summed
 #6: Change flatMap/map for Iteratee into a concat method?
 #7: Add either flatMap/map or concat for Enumerators
@@ -198,7 +198,7 @@ a bug in the scala compiler. When Enumerator is specified as an object (as it sh
 TODO: replicate this error in a minimum test case and post bug to scala
 #2: Fixed inconsistent directory naming structure
 #3: Eliminated unused code
-#4: Renamed Parser -> StepMachine
+#4: Renamed StepMachine -> StepMachine
 #5: Renamed Translator -> Transformer
 #6: Renamed "compose" to "connect"
 #7: Changed enumerable run return type to DoneTransition

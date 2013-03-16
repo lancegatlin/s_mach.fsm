@@ -5,7 +5,7 @@ import org.smach._
 import scala.util.Random
 import scala.collection.immutable.Seq
 
-class ParserTest extends FunSpec {
+class StepMachineTest extends FunSpec {
   val rnd = Stream.continually(Random.nextInt(100))
 
 //  object AllOrNoneCode extends Enumeration {
@@ -16,7 +16,7 @@ class ParserTest extends FunSpec {
 //
 //  case class AllOrNone[A](value: Either[AllOrNoneCode, A])
 //
-//  def parser[A](subparser: String => Plan.State.Done[A]) : String => Plan.State.Done[AllOrNone[A]] = {
+//  def StepMachine[A](subStepMachine: String => Plan.State.Done[A]) : String => Plan.State.Done[AllOrNone[A]] = {
 //    case s : String if s == "" => Plan.State.Success(AllOrNone(Left(AllOrNoneCode.NONE)))
 //    case s : String if s == "#all" => Plan.State.Success(AllOrNone(Left(AllOrNoneCode.ALL)))
 //    case s : String =>
@@ -26,75 +26,75 @@ class ParserTest extends FunSpec {
 //        b.flatMap()
 //      }
 //  }
-  describe("A Parser[A]") {
-      def parser1 : Parser[String,Int] = { s =>
+  describe("A StepMachine[A]") {
+      def StepMachine1 : StepMachine[String,Int] = { s =>
         try {
-          Parser.Succeed(s.toInt)
+          StepMachine.Succeed(s.toInt)
         } catch {
-          case e : Exception => Parser.Halt.error(e.getMessage,Some(e),{ () =>
-            Parser.Succeed(100)
+          case e : Exception => StepMachine.Halt.error(e.getMessage,Some(e),{ () =>
+            StepMachine.Succeed(100)
           })
         }
       }
     it("should be composable") {
-      val p : Parser[String,Int] =
+      val p : StepMachine[String,Int] =
         for {
-          v1 <- parser1
-          v2 <- parser1
+          v1 <- StepMachine1
+          v2 <- StepMachine1
         } yield v1 + v2
       val t0 = p("1")
-      assert(t0 == Parser.Succeed(2))
+      assert(t0 == StepMachine.Succeed(2))
     }
     it("should be composable even one Halts") {
-      val p : Parser[String,Int] =
+      val p : StepMachine[String,Int] =
         for {
-          v1 <- parser1
-          v2 <- parser1
+          v1 <- StepMachine1
+          v2 <- StepMachine1
         } yield v1 + v2
       val t0 = p("asdf")
       assert(t0.state.isHalted && t0.state.isRecoverable)
-      val t1 : Parser.Transition[Int] = utility.forceDoneTransition(t0.state.asInstanceOf[Parser.State.Halted[Int]].optRecover.get())
+      val t1 : StepMachine.Transition[Int] = utility.forceDoneTransition(t0.state.asInstanceOf[StepMachine.State.Halted[Int]].optRecover.get())
       assert(t0.state.isHalted && t0.state.isRecoverable)
-      val t2 : Parser.Transition[Int] = utility.forceDoneTransition(t1.state.asInstanceOf[Parser.State.Halted[Int]].optRecover.get())
-      assert(t2 == Parser.Succeed(200))
+      val t2 : StepMachine.Transition[Int] = utility.forceDoneTransition(t1.state.asInstanceOf[StepMachine.State.Halted[Int]].optRecover.get())
+      assert(t2 == StepMachine.Succeed(200))
     }
     it("Transition should be composable") {
-      val i : Parser.Transition[Int] =
+      val i : StepMachine.Transition[Int] =
         for {
-          v1 <- parser1("1")
-          v2 <- parser1("2")
+          v1 <- StepMachine1("1")
+          v2 <- StepMachine1("2")
         } yield v1 + v2
-      assert(i == Parser.Succeed(3))
+      assert(i == StepMachine.Succeed(3))
     }
-    it("Transition should be composable into a Halted if one of the parsers Halts") {
-      val i : Parser.Transition[Int] =
+    it("Transition should be composable into a Halted if one of the StepMachines Halts") {
+      val i : StepMachine.Transition[Int] =
         for {
-          v1 <- parser1("1")
-          v2 <- parser1("asdf")
-          v3 <- parser1("2")
+          v1 <- StepMachine1("1")
+          v2 <- StepMachine1("asdf")
+          v3 <- StepMachine1("2")
         } yield v1 + v2 + v3
       assert(i.state.isHalted && i.state.isRecoverable)
-      val s1 : Parser.Transition[Int] = utility.forceDoneTransition(i.state.asInstanceOf[Parser.State.Halted[Int]].optRecover.get())
-      assert(s1 == Parser.Succeed(103))
+      val s1 : StepMachine.Transition[Int] = utility.forceDoneTransition(i.state.asInstanceOf[StepMachine.State.Halted[Int]].optRecover.get())
+      assert(s1 == StepMachine.Succeed(103))
     }
-    it("Transition should be composable from n Parser Transitions") {
+    it("Transition should be composable from n StepMachine Transitions") {
       val v : Seq[String] = "1 2 3 4".split("\\s+").toIndexedSeq
-      val t : Seq[Parser.Transition[Int]] =  v map { s => parser1(s) }
-      val t0 : Parser.Transition[Seq[Int]] = t.sequence
-      assert(t0 == Parser.Succeed(List(1,2,3,4)))
+      val t : Seq[StepMachine.Transition[Int]] =  v map { s => StepMachine1(s) }
+      val t0 : StepMachine.Transition[Seq[Int]] = t.sequence
+      assert(t0 == StepMachine.Succeed(List(1,2,3,4)))
     }
-    it("Transtion should be composable from n Parser Transition even when one halts") {
+    it("Transtion should be composable from n StepMachine Transition even when one halts") {
       val v : Seq[String] = "1 2 asdf 3 4".split("\\s+").toIndexedSeq
-      val t : Seq[Parser.Transition[Int]] =  v map { s => parser1(s) }
-      val t0 : Parser.Transition[Seq[Int]] = t.sequence
+      val t : Seq[StepMachine.Transition[Int]] =  v map { s => StepMachine1(s) }
+      val t0 : StepMachine.Transition[Seq[Int]] = t.sequence
       assert(t0.state.isHalted && t0.state.isRecoverable)
-      val t1 : Parser.Transition[Int] = utility.forceDoneTransition(t0.state.asInstanceOf[Parser.State.Halted[Int]].optRecover.get())
-      assert(t1 == Parser.Succeed(List(1,2,100,3,4)))
+      val t1 : StepMachine.Transition[Int] = utility.forceDoneTransition(t0.state.asInstanceOf[StepMachine.State.Halted[Int]].optRecover.get())
+      assert(t1 == StepMachine.Succeed(List(1,2,100,3,4)))
     }
     it("Transition should be convertable to a Translator Transition") {
       val v : Seq[String] = "1 2 asdf 3 4".split("\\s+").toIndexedSeq
-      val t : Seq[Parser.Transition[Int]] =  v map { s => parser1(s) }
-      val t0 : Parser.Transition[Seq[Int]] = t.sequence
+      val t : Seq[StepMachine.Transition[Int]] =  v map { s => StepMachine1(s) }
+      val t0 : StepMachine.Transition[Seq[Int]] = t.sequence
       assert(t0.state.isHalted && t0.state.isRecoverable)
       // this never gets used
       val temp = new Translator.State.Continuation[Float,Int] {
