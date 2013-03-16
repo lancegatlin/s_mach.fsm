@@ -1,0 +1,191 @@
+Jan18
+Working on rewrite
+
+#1: Hard to be idiomatic about Continue/Failure/Success since there are 3 different Result types. Should Enumerator, Iteratee and Plan Result be collapsed into one Result class?
+#1a: Doing this would result in an overflow val in the Enumerator Result that is never used
+#1b: Doing this would result in an input type for the Enumerator Result that is never used
+#1ba: The input type could be mapped to Unit for Enumerator
+#1bb: Would result in pointless computations trying to accumulate the Unit overflow (when composing or folding Results)
+#1b: While possibly removing extra Result classes that are nearly identical, it would introduce awkwardness.
+#1c: Couldn't this overall concept be combined with OptRecover?
+#1ca: Could Result be replaced with OptRecover?
+#1caa: What about overflow? What about Issues?
+
+#2: Should there be a top-level Machine class?
+#2a: Are there any behaviors or data that Enumerator, Plan and Iteratee all share?
+#2aa: They all have an initial State. All States could be viewed as accepting input (Unit in case of Enumerator) and generating a Result from the input
+#2b: What about endOfInput signal. Does this make sense for Enumerator?
+#2ba: Not really, but endOfInput could just be a noop in Enumerator.
+#2bb: It could indicate that no further "step" calls will be made.
+#2bc: Could be used to close resources in the enumerator since no further steps will occur
+#2bca: Generally this isn't necessary since most enumerators are run to completion?
+#2bcaa: This is a bad assumption since the whole point is the Iteratee may say it is done before the Enumerator is done
+
+#3: Should List[O], List[I] be changed to just O,I?
+#3a: Not all machines accept one input and generate one output. Some machines may accept input generate no output or accept a single input and generate many outputs
+#3aa: For those machines, couldn't the O or I just be set to a List[...]?
+#3aaa: This would mean that to accumulate a result, O must be a Monoid. Also I, for accumulating overflow
+#3aaaa: Does overflow need to accumulate? Yes, for composing at a minimum
+#3b: O,I would need a way to represent "empty" most likely Monoid.zero
+#3c: While this makes this library simpler in design by making it more generic, it probably won't simplify the use of it by later code, but will instead complicate it.
+
+#4: There appear to be two distinct "types" of machines: 1) continuous output machines (enumerators, translators) and machines that only output on success (iteratee).
+Currently, this distinction is ignored. This leads to difficulty using the classes idiomatically
+#4a: XXX[I,O] could be modified to XXX[I,S,O] where I is input-type, S state-type and O is output-type. S is present in Continue/Failure/Success, O is only present in Success
+
+#5: Should Issue be eliminated in favor of later classes rolling it into O?
+#5a: This creates problems with List[O], specifically:
+#5aa: XmlReader would need to be Enumerator[(XmlEvent, List[Issue])]
+#5ab: XmlWriter would need to be Iteratee[XmlEvent,Issue]
+#5ac: XmlToXsdParser would need to be Iteratee[XmlEvent,(XsdEvent,List[Issue])]
+#5b: How would you get issues out if there was no output?
+
+#6: Should Issue be replaced with a simple Metadata trait
+#6a: "Metadata" can always be safely ignored if not understood.
+#6aa: Are Issues really Metadata? Aren't we planning on looking at Issue output to determine whether to continue?
+
+Jan 23
+
+#1: Should State store a "state" variable? Currently, the TransitionFunction is the "state" variable which is weird.
+#1a: For now, renamed TransitionFunction to Transitor to take into account that it is really the combination of State(Continue) & TransitionFunction
+
+#2: Should O be a Monoid instead of Seq[O] or should Seq[O] be M[O] where M is a Monad, to allow for composing monads, e.g. Writer[E,O]
+#2a: Would not apply to I or overflow I. I could still be a composed monad such as LogWriter[I].
+#2b: A better question would be to address what the requirements are for accumulating "metadata" or "issues" since this is the primary problem. Monads are just one way to solve that problem. (that might have extra benefits)
+
+#3: What are the requirements for accumulating "metadata" or "issues" during SM processing?
+#3a: When composing or folding two states, must be able to accumulate the metadata/issues from both
+#3aa: If M[O] was used instead of Seq[O] (say M = Writer[List(Issue),Seq[O]]) then Monoid accumulation can be used for folding
+#3ab: When composing how would the M[O] of m0 connect to the input of m1?
+#3aba: Hopefully by mapping the output out of the monad?
+#3abaa: Would this work when the return type of applying input is a State? You would get back M[State[I,O,A]] which doesn't make sense
+
+#4: Should there be a Result trait that contains the output & overflow?
+#4a: output & overflow are not really part of state
+
+Jan 24
+
+#1: Moving value from Result.Success to State.Success. This is required to convert a given state to a result.
+
+#2: Should optRecover be moved from Result.Success to State.Success?
+
+#3: Should StateMachine include a type for the set of possible states? StateMachine[I,O,A] => StateMachine[∑,Γ,S,F <: S]
+#3a: This is more aligned to the mathematical model, but how would Continue/Success/Failure work? How could a value be
+extracted from a final state? How would you compose machines? How would you fold results?
+#3ab: trait State[S,F <: S] { def fold[X](isS: S => X, isF: F => X) : X } StateMachine[∑,Γ,S <: State[S,F],F <: S]
+
+#4: Added metadata: List[Any] to Result for accumulating metadata
+
+Jan 27
+
+#1: SBT crashes with "bad symbolic reference" for Iteratee.State when Iteratee is an object. Changed Iteratee to a
+package with a package object and error went away.
+
+Jan 28
+
+#1: Added Plan as StateMachine[Unit,Unit,A]
+
+#2: Added more tests
+
+#3: Should optRecover return a State or a Result? (Currently returns a Result)
+
+Jan 29
+
+#1: Fixed Failure/Recover tests and code
+#2: Added Enumerable[O,A] -> StateMachine[Unit,O,A]
+#3: Added Progress to TraversableEnumerator
+
+Jan 31
+
+#1: When Failure occurs, the severity of the issue should be communicated to allow caller to decide whether to recover.
+ Additionally, having an error message that can be displayed to user if recover is not selected.
+#1a: May be better to bring the Issue class as a simple way of capturing user message + severity
+#1b: Since one of the severity codes is warning, Failure should be renamed
+#1ba: Stop? Err? Error? NoGo? Issue? Pause?
+
+Feb 1
+
+#1: Added IssueSeverityCode, IssueHandlingCode.
+#2: Renamed Result -> Transition
+#3: Renamed States/Results for clarity => Continue(Transition)/Continuation(State), Succeed(Transition)/Success(State)
+ and Halt(Transition)/Halted(State)
+#4: Added Issue. Halted now accepts a Seq[Issue]
+
+Feb 4
+#1 Added Iteratee.peek
+
+Feb 5
+#1: Should recovery by utility functions be limited to a maximum number of tries to prevent infinite recover loops?
+#2: Parsers, Partial parsers, how best to implement them using this framework?
+#3: Should Input[A] be added?
+#3a: This could be implemented on top of the framework by adding Input[A] and an implicit conversion for f: Input[A] => Transition[I,O,A] to a Continuation[I,O,A] with methods implemented in terms of f
+#4: Should Transition be specialized into Succeed, Halt and Continue case classes?
+#5: If machine A depends on disparate machine B, how to compose a recovery of A if B Halts with a recover?
+
+Feb 6
+
+#1: Added Input[A], fixed problems with recovering Halted states that this addition exposed
+#2: Renamed IssueRecoveryStrategy to HaltedRecoveryStrategy
+#3: Redesigned HaltedRecoveryStrategy to combine the accumulator and transition function into a single strategy object
+
+Feb 11
+#1: Removed Continuation.apply(Input[A]) and added as implicit
+#2: Swapped return parameters for HaltedRecoveryStrategy.recoverXXX to align with Enumerable.impl.runEnumerable
+
+Feb 12
+#1: I need a way to combine the outputs of single input parsers (A => Iteratee.Done[A,B]) into an arbitrary Transition output
+#1a: The problem is that if the single input parser returns Halted the encapsulating output should also return a Halted that will recover the inner Halted and then proceed with further processing
+#1b: Using A => Iteratee.Done[A,B] almost works except that optRecover () => Transition[A,B] can return a Continuation among other invalid states
+
+Feb 16
+#1: Using I => Plan.State.Done[A] as a "parser"
+#1aa: Main issue with this is that the recover for a plan returns a Transition, which is meaningless for Parser
+
+Feb 17
+#1: Working on Parser
+#1a: What's my goal here?
+#1aa: I'm trying to create composable parser results - given a bunch of parsers that have all received some input and produced a result, I need to compose the results such that if any of the results are Halted, then the composed result is Halted
+#1ab: I also need an idiomatic way to convert a parser result to either an Iteratee or a Translator Transition
+#2: Where possible converted implicit classes to implicit value classes to eliminate unboxing
+#3: Should I convert Transition to a sealed trait base class and move parameters to their appropriate sub-types?
+#3aa: This is will result in a large rewrite of the code base
+#4: Generalized Parser impl flatpMap/map to Enumerable
+#5: Added Enumerable.Transition.toOutput and Enumerable.Transition.toValue for converting an Enumerable (Parser) Transition to another type of transition
+#6: Note that both Enumerable flatMap/map and toOutput/toValue cause the state to be run if it is in the continuation state. Since Parser is never in the continuation state, this has not been a problem so far.
+
+Feb 18
+
+#1: Need a way to flatMap/map a collection of Enumerable.Transitions: Seq[Enumerable.Transition[A]] -> Enumerable.Transition[Seq[A]]
+
+Feb 19-27
+
+#1: Rewrite to change Transition into sealed trait with 3 derived case classes: Succeed, Halt, Continue (also DoneTransition)
+
+Feb 26
+
+#1: TODO: Change apply(EndOfInput) : Transition to apply(EndOfInput) : DoneTransition
+#2: Should Parser[A] = I => StateMachine.Transition[Unit,Unit,A] be changed to I => StateMachine.DoneTransition[Unit,Unit,A] ?
+#2aa: Halted.optRecover will always return a Transition, so users will always ultimately have to deal with Continue/Continuation
+#2ab: Should Parser be a completely different type, independent of the StateMachine structure?
+#2ac: Changing to DoneTransition will require adding flatMap/map methods for Enumerable DoneTransitions
+
+Feb 27
+
+#1: Completed change Parser[A] I => Transition to I => DoneTransition
+#1a: Modified forceDoneState/forceDoneTransition to throw IllegalStateException if Continue is returned after application of EndOfInput. Recover from Parser.Halt should utilize forceDone.
+#2: Changed apply(EndOfInput) : Transition to apply(EndOfInput) : DoneTransition
+
+Mar 1
+
+#1: TODO: rename "Transition" Edge or Delta
+#2: TODO: remove output from Succeed/Halt
+#3: TODO: combine Succeed/Success and Halt/Halted keep Continue/Continuation distinction
+#4: TODO: rename Parser StepMachine
+#5: TODO: a function that can "parallel" compose Iteratees of the same type so that the input is applied to both Iteratees and the output is summed
+#6: Change flatMap/map for Iteratee into a concat method?
+#7: Add either flatMap/map or concat for Enumerators
+
+Mar 10
+
+#1: TODO: change Enumerable run return type to DoneTransition
+#2: TODO: Rename compose to connect
