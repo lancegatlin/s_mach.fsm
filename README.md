@@ -113,7 +113,7 @@ println(tr.output)
 tr match {
   case q : Enumerator.Continue[Int] => println("step me more!")
   case q : Enumerator.Succeed[Int] => println("done!")
-  case q : Enumerator.Halted[Int] => println("error!")
+  case q : Enumerator.Halt[Int] => println("error!")
 }
 ````
 
@@ -127,7 +127,7 @@ val tr : Iteratee.Transition[Int,String] = i.s0(List(1,2,3))
 tr match {
   case q : Iteratee.Continue[Int,String] => println("needs more input!")
   case q : Iteratee.Succeed[Int,String] => println(q.value)
-  case q : Iteratee.Halted[Int,String] => println("error!")
+  case q : Iteratee.Halt[Int,String] => println("error!")
 }
 ````
 
@@ -142,7 +142,7 @@ println(tr.output)
 tr match {
   case q : Translator.Continue[Int,String] => println("accepting more input!")
   case q : Translator.Succeed[Int,String] => println("done!")
-  case q : Translator.Halted[Int,String] => println("error!")
+  case q : Translator.Halt[Int,String] => println("error!")
 }
 ````
 
@@ -156,6 +156,6 @@ val p : Plan[Float] = ...
 val result : Plan.DoneTransition[Float] = p.run()
 tr match {
   case q : Plan.Succeed[Int] => println("done="+q.value)
-  case q : Plan.Halted[Int] => println("error!")
+  case q : Plan.Halt[Int] => println("error!")
 }
 ````
