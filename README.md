@@ -91,11 +91,11 @@ StateMachines are always connected input to output, with the first state machine
 
 val enumerator : StateMachine[Unit,Int,Unit] = ...
 
-val translator : StateMachine[Int,String,Unit] = ...
+val transformer : StateMachine[Int,String,Unit] = ...
 
 val iteratee : StateMachine[String, Unit, Float] = ...
 
-val plan : StateMachine[Unit,Unit,Float] = enumerator connect translator connect iteratee
+val plan : StateMachine[Unit,Unit,Float] = enumerator connect transformer connect iteratee
 
 ````
 
