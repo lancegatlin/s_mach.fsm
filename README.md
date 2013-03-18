@@ -131,18 +131,18 @@ tr match {
 }
 ````
 
-A Translator transforms input chunks into output chunks of the same or a different type:
+A Transformer transforms input chunks into output chunks of the same or a different type:
 ````scala
-type Translator[I,O] = StateMachine[I,O,Unit]
+type Transformer[I,O] = StateMachine[I,O,Unit]
 ````
 ````scala
-val t : Translator[Int,String] = ...
-val tr : Translator.Transition[Int,String] = t.s0(List(1,2,3))
+val t : Transformer[Int,String] = ...
+val tr : Transformer.Transition[Int,String] = t.s0(List(1,2,3))
 println(tr.output)
 tr match {
-  case q : Translator.Continue[Int,String] => println("accepting more input!")
-  case q : Translator.Succeed[Int,String] => println("done!")
-  case q : Translator.Halt[Int,String] => println("error!")
+  case q : Transformer.Continue[Int,String] => println("accepting more input!")
+  case q : Transformer.Succeed[Int,String] => println("done!")
+  case q : Transformer.Halt[Int,String] => println("error!")
 }
 ````
 
