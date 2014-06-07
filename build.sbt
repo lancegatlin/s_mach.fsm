@@ -1,11 +1,11 @@
-scalaVersion := "2.10.0"
+scalaVersion := "2.11.0"
 
-organization := "org.smach"
+organization := "org.s_mach"
 
-name := "smach-core"
+name := "s_mach-core"
 
 version := "1.0-SNAPSHOT"
 
 scalacOptions ++= Seq("-feature","-unchecked", "-deprecation")
 
-libraryDependencies += "org.scalatest" %% "scalatest" % "2.0.M5b"
+libraryDependencies += "org.scalatest" % "scalatest_2.11" % "2.2.0" % "test"
