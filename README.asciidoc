@@ -1,0 +1,176 @@
+s_mach: A Scala open-source state machine library
+=================================================
+Lance Gatlin <lance.gatlin@gmail.com>
+v1,31-May-2014
+:blogpost-status: unpublished
+:blogpost-categories: s_mach,scala
+
+== Versions
+* Scala 2.10
+
+== Introduction
++s_mach+<<sources, ^1^>> is an open-source Scala library designed to support creation of functional, composable, streamable and recoverable state machines. +s_mach+ state machines can be composed together to form larger state machines or connected together to form a processing pipeline plan that can be run to produce a final value. s_mach state machines also support a generic error recovery system (by way of the +Halted+ state) that may be used to report errors encountered during processing by any composed or connected +s_mach+ state machine. Additionally, when an error is encountered, +s_mach+ state machines may provide an optional recovery method for fixing or ignoring broken input. While running a composed or connected +s_mach+ state machine, the client is provided with the error message and empowered with the decision of whether to proceed with processing despite any errors.
+
+In +s_mach+, a state machine is defined as an object that has an initial +State+, +s0+:
+
+[source,scala,numbered]
+trait StateMachine[I,O,A] {
+  def s0 : State[I,O,A]
+}
+
+A +State+ is a class that represents the state of a state machine at some point in processing. The +State+ class is never instantiated directly, instead one of the three basic sub-types are created:
+
+1. +Continuation+:  represents the state of a state machine that requires more input to continue processing.
+2. +Success+: represents the state of a state machine that has completed processing and which resulted in a single value.
+3. +Halted+: represents the state of a state machine that has performed some processing but did not successfully complete that processing and which might be recoverable
+
+[source,scala,numbered]
+----
+sealed trait State[I,O,A] { ... }
+
+trait Continuation[I,O,A] extends State[I,O,A] {
+  ...
+  def apply(xs : Seq[I]) : Transition[I,O,A]
+  def apply(x : I) : Transition[I,O,A]
+  def apply(x : EndOfInput) : DoneTransition[I,O,A]
+}
+
+sealed trait Done[I,O,A] extends State[I,O,A] { ... }
+
+final case class Success[I,O,A](value : A) extends Done[I,O,A] { ... }
+
+final case class Halted[I,O,A](issues : Seq[Issue], optRecover : Option[() => Transition[I,O,A]] = None) extends Done[I,O,A] { ... }
+----
+
+=== Transitions
+When input is applied to a +Continuation+, a +Transition+ derived object is created which has the next state of the state machine and any output produced by processing the input by the +Continuation+:
+
+[source,scala,numbered]
+sealed trait Transition[I,O,A] {
+  ...
+  def state : State[I,O,A]
+  def output : Seq[O]
+}
+
+The +DoneTransition+ is a sub-type of +Transition+ returned when +EndOfInput+ (EOI) is applied to a +Continuation+ state. A +DoneTransition+ state can only return +Done+ states: +Halted+ or +Success+. A +DoneTransition+ may also have overflow, input that was not consumed during processing.
+
+[source,scala,numbered]
+sealed trait DoneTransition[I,O,A] extends Transition[I,O,A] {  
+  override def state : State.Done[I,O,A]
+  def overflow : Seq[I]
+}
+
+Each of the basic +State+ derived types has a corresponding +Transition+ derived type:
+
+[source,scala,numbered]
+----
+final case class Continue[I,O,A](
+  state : State.Continuation[I,O,A],
+  output : Seq[O] = Seq.empty[O]
+  ...
+) extends Transition[I,O,A] { ... }
+
+final case class Succeed[I,O,A](
+  state : State.Success[I,O,A],
+  output : Seq[O],
+  overflow : Seq[I]
+  ...
+) extends DoneTransition[I,O,A] { ... }
+
+final case class Halt[I,O,A](
+  state : State.Halted[I,O,A],
+  output : Seq[O],
+  overflow : Seq[I]
+  ...
+) extends DoneTransition[I,O,A] { ... }
+----
+
+NOTE: +Transition+ derived objects are 'verbs' and their +State+ derived equivalents are 'nouns'.
+
+=== Type-parameters
+All +s_mach+ state machine classes (+StateMachine+, +State+, +Transition+, etc) accept three type-parameters:
+
+1. +I+: The type of input consumed by the machine during processing (may be Unit)
+2. +O+: The type of output produced by the machine after each transition (may be Unit)
+3. +A+: The final value type produced by the machine once processing has completed successfully (also may be Unit)
+
++StateMachine+ instances are always connected input to output, with the first state machine typically accepting +Unit+. Only the final value type of the last state machine is passed on when connecting +StateMachine+ instances:
+
+[source,scala,numbered]
+----
+val enumerator : StateMachine[Unit,Int,Unit] = ...
+
+val transformer : StateMachine[Int,String,Unit] = ...
+
+val iteratee : StateMachine[String, Unit, Float] = ...
+
+val plan : StateMachine[Unit,Unit,Float] = enumerator connect transformer connect iteratee
+
+val finalValue : Float = plan.run()
+----
+
+=== Type-Aliases
+To make working with +s_mach+ state machines easier, type-aliases are provided based on the state machine's purpose:
+
+An +Enumerator+ produces output in chunks by stepping the enumerator:
+[source,scala,numbered]
+----
+type Enumerator[O] = StateMachine[Unit,O,Unit]
+...
+val e : Enumerator[Int] = ???
+val tr : Enumerator.Transition[Int] = e.s0.step()
+println(tr.output)
+tr match {
+  case q : Enumerator.Continue[Int] => println("step me more!")
+  case q : Enumerator.Succeed[Int] => println("done!")
+  case q : Enumerator.Halted[Int] => println("error!")
+}
+----
+
+An +Iteratee+ consumes input in chunks to eventually yield a final single value:
+[source,scala,numbered]
+----
+type Iteratee[I,A] = StateMachine[I,Unit,A]
+...
+val i : Iteratee[Int,String] = ???
+val tr : Iteratee.Transition[Int,String] = i.s0(List(1,2,3))
+tr match {
+  case q : Iteratee.Continue[Int,String] => println("needs more input!")
+  case q : Iteratee.Succeed[Int,String] => println(q.value)
+  case q : Iteratee.Halted[Int,String] => println("error!")
+}
+----
+
+A +Transformer+ transforms input chunks into output chunks of the same or a different type:
+
+[source,scala,numbered]
+----
+type Transformer[I,O] = StateMachine[I,O,Unit]
+...
+val t : Transformer[Int,String] = ...
+val tr : Transformer.Transition[Int,String] = t.s0(List(1,2,3))
+println(tr.output)
+tr match {
+  case q : Transformer.Continue[Int,String] => println("accepting more input!")
+  case q : Transformer.Succeed[Int,String] => println("done!")
+  case q : Transformer.Halted[Int,String] => println("error!")
+}
+----
+
+A +Plan+ to stream input from an Enumerator to an Iteratee by way of 0 or more Transformers and eventually produce a final single value:
+
+[source,scala,numbered]
+----
+type Plan[A] = StateMachine[Unit,Unit,A]
+...
+val p : Plan[Float] = ...
+val result : Plan.DoneTransition[Float] = p.run()
+tr match {
+  case q : Plan.Succeed[Int] => println("done="+q.value)
+  case q : Plan.Halted[Int] => println("error!")
+}
+----
+
+[[sources]]
+== Sources
+1. https://github.com/lancegatlin/s_mach
