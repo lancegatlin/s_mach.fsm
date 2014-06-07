@@ -6,7 +6,8 @@ v1,31-May-2014
 :blogpost-categories: s_mach,scala
 
 == Versions
-* Scala 2.10
+* Scala 2.11.0
+* SBT 0.13.1
 
 == Introduction
 +s_mach+<<sources, ^1^>> is an open-source Scala library designed to support creation of functional, composable, streamable and recoverable state machines. +s_mach+ state machines can be composed together to form larger state machines or connected together to form a processing pipeline plan that can be run to produce a final value. s_mach state machines also support a generic error recovery system (by way of the +Halted+ state) that may be used to report errors encountered during processing by any composed or connected +s_mach+ state machine. Additionally, when an error is encountered, +s_mach+ state machines may provide an optional recovery method for fixing or ignoring broken input. While running a composed or connected +s_mach+ state machine, the client is provided with the error message and empowered with the decision of whether to proceed with processing despite any errors.
