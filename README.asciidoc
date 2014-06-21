@@ -1,5 +1,5 @@
 s_mach.fsm: A Scala open-source state machine library
-=================================================
+=====================================================
 Lance Gatlin <lance.gatlin@gmail.com>
 v1,31-May-2014
 :blogpost-status: unpublished
